@@ -1,0 +1,29 @@
+{
+    "name": "evowareio/ollama-php",
+    "description": "A library for integrating Ollama into PHP",
+    "type": "library",
+    "license": "GNU GPLv3",
+    "autoload": {
+        "psr-4": {
+            "Evoware\\OllamaPHP\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikolaj Ilczyna",
+            "email": "mikolaj@evoware.io"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.8",
+        "illuminate/config": "^11.1",
+        "nesbot/carbon": "^3.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": ">=3.52",
+        "laravel/pint": ">=1.15",
+        "phpunit/phpunit": "^11.0"
+    }
+}
