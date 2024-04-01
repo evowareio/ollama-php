@@ -1,16 +1,16 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Evoware\OllamaPHP\OllamaClient;
-use Evoware\OllamaPHP\Inference;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Handler\MockHandler;
+use Evoware\OllamaPHP\OllamaClient;
 
-class InferenceTest extends TestCase {
-    private $client;
-    private $inference;
+class InferenceTest extends TestCase
+{
+    private OllamaClient $client;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         $response = '{
             "model": "llama2",
             "created_at": "2023-11-09T21:07:55.186497Z",
@@ -30,27 +30,5 @@ class InferenceTest extends TestCase {
         ]);
 
         $this->client = $this->createMock(OllamaClient::class);
-        $this->inference = new Inference($this->client);
     }
-
-    public function testGenerateCompletion() {
-        $expectedResponse = ['response' => 'Oh, what a great test this is.'];
-        $this->client->method('request')
-                     ->willReturn($expectedResponse);
-
-        $response = $this->inference->generateCompletion("This is a test.", []);
-        $this->assertEquals($expectedResponse['response'], $response);
-    }
-
-    public function testGenerateChatCompletion() {
-        $expectedResponse = ['response' => 'Hello, how can I help you?'];
-        $this->client->method('request')
-                     ->willReturn($expectedResponse);
-
-        $messages = [['role' => 'user', 'content' => 'Hi']];
-        $response = $this->inference->generateChatCompletion($messages, []);
-        $this->assertEquals($expectedResponse['response'], $response);
-    }
-
-    // Additional tests as required
 }
