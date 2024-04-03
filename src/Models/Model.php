@@ -58,4 +58,9 @@ class Model
         $this->modifiedAt = DateTime::createFromFormat(DateTime::ATOM, $data['modified_at']);
         $this->details = $data['details'];
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }
