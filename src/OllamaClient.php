@@ -85,7 +85,6 @@ class OllamaClient
         return $this->callEndpoint('chat', $jsonData);
     }
 
-
     /**
      * Generate embeddings for a given prompt using the specified model or options.
      *
@@ -148,8 +147,12 @@ class OllamaClient
         }
     }
 
-    public function model(): ModelRepository
+    public function model(?string $modelName = null): ModelRepository
     {
+        if (!empty($modelName)) {
+            $this->modelName = $modelName;
+        }
+        
         return $this->getModelRepository();
     }
 }
