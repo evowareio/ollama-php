@@ -2,22 +2,23 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Evoware\OllamaPHP\Traits\MocksHttpRequests;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
 use Evoware\OllamaPHP\OllamaClient;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Traits\MocksHttpRequests;
+use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
 {
     use MocksHttpRequests;
 
     private $httpClient;
+
     private $ollamaClient;
 
     public function testGenerateCompletionSuccess()
     {
         $this->httpClient = $this->mockHttpClient([
-            [200, ['Content-Type' => 'application/json'], json_encode(['response' => 'Generated completion goes here.', 'done' => true])]
+            [200, ['Content-Type' => 'application/json'], json_encode(['response' => 'Generated completion goes here.', 'done' => true])],
         ]);
         $this->ollamaClient = new OllamaClient($this->httpClient);
 

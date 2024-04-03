@@ -156,7 +156,6 @@ class ModelFile
     }
 
     /** Getters */
-
     public function getParent(): string
     {
         return $this->parent;

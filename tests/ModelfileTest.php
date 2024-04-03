@@ -2,8 +2,8 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Evoware\OllamaPHP\Models\ModelFile;
+use PHPUnit\Framework\TestCase;
 
 class ModelFileTest extends TestCase
 {

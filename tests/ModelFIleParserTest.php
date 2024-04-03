@@ -2,8 +2,8 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Evoware\OllamaPHP\Parsers\ModelFileParser;
+use PHPUnit\Framework\TestCase;
 
 class ModelFileParserTest extends TestCase
 {
@@ -15,7 +15,7 @@ class ModelFileParserTest extends TestCase
         $expected = [
             'from' => 'llama2:7b',
             'parameters' => [
-                'temperature' => '0.7'
+                'temperature' => '0.7',
             ],
         ];
 
@@ -25,7 +25,7 @@ class ModelFileParserTest extends TestCase
     public function testParseMultilineInstructions()
     {
         $parser = new ModelFileParser();
-        $content = <<<EOD
+        $content = <<<'EOD'
 TEMPLATE """
 [INST] {{ if .System }}<<SYS>>{{ .System }}<</SYS>>
 
@@ -42,7 +42,7 @@ EOD;
     public function testParseMixedInstructions()
     {
         $parser = new ModelFileParser();
-        $content = <<<EOD
+        $content = <<<'EOD'
 FROM llama2:7b
 PARAMETER temperature 0.7
 TEMPLATE """
@@ -54,11 +54,11 @@ EOD;
 
         $expected = [
             'from' => 'llama2:7b',
-            'template' => "Hello, {{ .Name }}. Welcome to our platform.",
+            'template' => 'Hello, {{ .Name }}. Welcome to our platform.',
             'parameters' => ['temperature' => '0.7'],
             'messages' => [
                 ['role' => 'user', 'message' => 'Hello'],
-                ['role' => 'assistant', 'message' => 'Welcome, user!']
+                ['role' => 'assistant', 'message' => 'Welcome, user!'],
             ],
         ];
 

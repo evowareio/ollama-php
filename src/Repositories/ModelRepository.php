@@ -2,9 +2,9 @@
 
 namespace Evoware\OllamaPHP\Repositories;
 
-use GuzzleHttp\Client;
-use Evoware\OllamaPHP\Models\ModelFile;
 use Evoware\OllamaPHP\DataObjects\Model;
+use Evoware\OllamaPHP\Models\ModelFile;
+use GuzzleHttp\Client;
 
 class ModelRepository
 {
@@ -37,7 +37,7 @@ class ModelRepository
 
     public function info(string $modelName): Model
     {
-        $response = $this->makeRequest('GET', "show", [
+        $response = $this->makeRequest('GET', 'show', [
             'name' => $modelName,
         ]);
 
@@ -56,7 +56,7 @@ class ModelRepository
 
     public function delete($modelName): bool
     {
-        $response = $this->makeRequest('POST', "delete", [
+        $response = $this->makeRequest('POST', 'delete', [
             'name' => $modelName,
         ]);
 
@@ -65,7 +65,7 @@ class ModelRepository
 
     public function pull($modelName, $stream = false): bool
     {
-        $response = $this->makeRequest('POST', "pull", [
+        $response = $this->makeRequest('POST', 'pull', [
             'name' => $modelName,
             'stream' => $stream,
         ]);
@@ -75,7 +75,7 @@ class ModelRepository
 
     public function push($modelName, $stream = false): bool
     {
-        $response = $this->makeRequest('POST', "push", [
+        $response = $this->makeRequest('POST', 'push', [
             'name' => $modelName,
             'stream' => $stream,
         ]);
@@ -87,7 +87,7 @@ class ModelRepository
     {
 
         $response = $this->client->request($method, $uri, [
-            'json' => $data
+            'json' => $data,
         ]);
 
         return $response;

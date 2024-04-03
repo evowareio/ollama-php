@@ -2,19 +2,18 @@
 
 namespace Evoware\OllamaPHP\Traits;
 
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 
 trait MocksHttpRequests
 {
     /**
      * Create a Guzzle Client with a Mock Handler.
-     *  
-     * @param array $responses An array of responses to mock. Each response should be a nested array
-     *                         containing the response code, headers, and body.
-     * @return Client
+     *
+     * @param  array  $responses  An array of responses to mock. Each response should be a nested array
+     *                            containing the response code, headers, and body.
      */
     protected function mockHttpClient(array $responses): Client
     {
@@ -26,9 +25,9 @@ trait MocksHttpRequests
             $body = $response['body'] ?? $response[2] ?? '';
 
             // Create a new instance of the Response class with the extracted values.
-            if (!is_string($body)) {
+            if (! is_string($body)) {
                 $body = json_encode($body);
-            };
+            }
 
             $mockResponse = new Response((int) $statusCode, $headers, $body);
 

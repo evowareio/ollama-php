@@ -2,18 +2,21 @@
 
 namespace Evoware\OllamaPHP;
 
-use GuzzleHttp\ClientInterface;
-use Evoware\OllamaPHP\Responses\OllamaResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
 use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\OllamaResponse;
+use GuzzleHttp\ClientInterface;
 
 class OllamaClient
 {
     private ClientInterface $httpClient;
+
     private ModelRepository $modelRepository;
+
     private string $modelName = '';
+
     private array $modelOptions = [];
 
     public function __construct(ClientInterface $httpClient)
@@ -24,12 +27,10 @@ class OllamaClient
     /**
      * Get the model modelRepository.
      * The model modelRepository is used to create and manage models.
-     *
-     * @return ModelRepository
      */
     public function getModelRepository(): ModelRepository
     {
-        if (!isset($this->modelRepository)) {
+        if (! isset($this->modelRepository)) {
             $this->modelRepository = new ModelRepository($this->httpClient);
         }
 
@@ -39,14 +40,13 @@ class OllamaClient
     /**
      * Generate a completion using the provided prompt, model name, and model modelOptions.
      *
-     * @param string $prompt The prompt for generating the completion.
-     * @param string|null $modelName (Optional) The name of the model to use for completion.
-     * @param array $modelOptions (Optional) Additional modelOptions for generating the completion.
-     * @return CompletionResponse
+     * @param  string  $prompt  The prompt for generating the completion.
+     * @param  string|null  $modelName  (Optional) The name of the model to use for completion.
+     * @param  array  $modelOptions  (Optional) Additional modelOptions for generating the completion.
      */
     public function generateCompletion(string $prompt, ?string $modelName = null, array $modelOptions = []): CompletionResponse
     {
-        if (!empty($modelName)) {
+        if (! empty($modelName)) {
             // Override model if provided on runtime
             $this->modelName = $modelName;
         } elseif (isset($modelOptions['model'])) {
@@ -60,7 +60,7 @@ class OllamaClient
             'modelOptions' => $modelOptions,
         ], $this->modelOptions);
 
-        if (!empty($modelOptions)) {
+        if (! empty($modelOptions)) {
             $jsonData['modelOptions'] = $modelOptions;
         }
 
@@ -70,9 +70,8 @@ class OllamaClient
     /**
      * Generate a chat completion response.
      *
-     * @param array $messages list of chat messages
-     * @param array $modelOptions modelOptions for the model
-     * @return ChatCompletionResponse
+     * @param  array  $messages  list of chat messages
+     * @param  array  $modelOptions  modelOptions for the model
      */
     public function generateChatCompletion(array $messages = [], ?string $modelName = null, array $modelOptions = []): ChatCompletionResponse
     {
@@ -88,14 +87,14 @@ class OllamaClient
     /**
      * Generate embeddings for a given prompt using the specified model or options.
      *
-     * @param string $prompt The prompt for which to generate embeddings.
-     * @param string|null $modelName The name of the model to use.
-     * @param array $modelOptions Additional options for the model.
+     * @param  string  $prompt  The prompt for which to generate embeddings.
+     * @param  string|null  $modelName  The name of the model to use.
+     * @param  array  $modelOptions  Additional options for the model.
      * @return EmbeddingResponse The response containing the generated embeddings.
      */
     public function generateEmbeddings(string|array $prompt, ?string $modelName = null, array $modelOptions = []): EmbeddingResponse
     {
-        if (!empty($this->modelName)) {
+        if (! empty($this->modelName)) {
             // Override model if provided on runtime
             $this->modelName = $modelName;
         } elseif (isset($modelOptions['model'])) {
@@ -149,10 +148,10 @@ class OllamaClient
 
     public function model(?string $modelName = null): ModelRepository
     {
-        if (!empty($modelName)) {
+        if (! empty($modelName)) {
             $this->modelName = $modelName;
         }
-        
+
         return $this->getModelRepository();
     }
 }

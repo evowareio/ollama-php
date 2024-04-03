@@ -31,7 +31,7 @@ class ModelFileParser
                     break;
                 default:
                     // Direct assignment for single-value instructions
-                    $this->handleOtherInstruction($instruction, $value, $structuredData); 
+                    $this->handleOtherInstruction($instruction, $value, $structuredData);
                     break;
             }
         }
@@ -41,8 +41,8 @@ class ModelFileParser
 
     private function handleParameter(string $instruction, string $value, array &$structuredData)
     {
-        list($paramName, $paramValue) = explode(' ', $value, 2);
-        if (!isset($structuredData[$instruction])) {
+        [$paramName, $paramValue] = explode(' ', $value, 2);
+        if (! isset($structuredData[$instruction])) {
             $structuredData[$instruction] = [];
         }
         $structuredData[$instruction][$paramName] = $paramValue;
@@ -50,8 +50,8 @@ class ModelFileParser
 
     private function handleMessage(string $instruction, string $value, array &$structuredData)
     {
-        list($role, $message) = explode(' ', $value, 2);
-        if (!isset($structuredData[$instruction])) {
+        [$role, $message] = explode(' ', $value, 2);
+        if (! isset($structuredData[$instruction])) {
             $structuredData[$instruction] = [];
         }
         $structuredData[$instruction][] = ['role' => $role, 'message' => $message];
@@ -69,7 +69,7 @@ class ModelFileParser
             $structuredData[$instruction] = $value;
         } else {
             // Append to an array for other instructions that might have multiple values
-            if (!isset($structuredData[$instruction])) {
+            if (! isset($structuredData[$instruction])) {
                 $structuredData[$instruction] = [];
             }
             $structuredData[$instruction][] = $value;

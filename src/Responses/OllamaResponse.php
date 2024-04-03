@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 class OllamaResponse implements OllamaResponseInterface
 {
     protected ResponseInterface $guzzleResponse;
+
     protected array $data;
 
     public function __construct(ResponseInterface $response)

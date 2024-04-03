@@ -2,8 +2,6 @@
 
 namespace Evoware\OllamaPHP\Responses;
 
-use Evoware\OllamaPHP\Responses\OllamaResponse;
-
 class ModelOperationResponse extends OllamaResponse
 {
     public function getMessage(): string
