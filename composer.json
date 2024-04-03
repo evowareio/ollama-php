@@ -2,7 +2,7 @@
     "name": "evoware/ollama-php",
     "description": "A PHP library for interacting with local Ollama server.",
     "type": "library",
-    "license": "GNU GPLv3",
+    "license": "GPL-3.0-or-later",
     "autoload": {
         "psr-4": {
             "Evoware\\OllamaPHP\\": "src/"
