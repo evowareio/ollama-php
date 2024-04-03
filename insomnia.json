@@ -1,0 +1,192 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2024-04-02T21:00:00.000Z",
+    "__export_source": "insomnia.desktop.app:v2024.4.1",
+    "resources": [
+      {
+        "_id": "wrk_ollama_api",
+        "parentId": null,
+        "modified": 1712090390863,
+        "created": 1712076065464,
+        "name": "Ollama API",
+        "description": "HTTP API for interacting with Ollama models.",
+        "scope": "collection",
+        "_type": "workspace"
+      },
+      {
+        "_id": "env_base",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390863,
+        "created": 1712076065465,
+        "name": "Base Environment",
+        "data": {
+          "BASE_URL": "http://127.0.0.1:11434/api"
+        },
+        "dataPropertyOrder": {
+          "&": [
+            "BASE_URL"
+          ]
+        },
+        "color": null,
+        "isPrivate": false,
+        "metaSortKey": 1712076065465,
+        "_type": "environment"
+      },
+      {
+        "_id": "req_generate_a_completion",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390864,
+        "created": 1712076065466,
+        "url": "{{ _.BASE_URL }}/generate",
+        "name": "Generate a completion",
+        "description": "Generate a response for a given prompt with a provided model. This is a streaming endpoint.",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n  \"model\": \"llama2\",\n  \"prompt\": \"Why is the sky blue?\",\n  \"stream\": false,\n  \"options\": {\n    \"temperature\": 0.7\n  }\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1712076065466,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_generate_a_chat_completion",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390865,
+        "created": 1712076065467,
+        "url": "{{ _.BASE_URL }}/chat",
+        "name": "Generate a chat completion",
+        "description": "Generate the next message in a chat with a provided model. This is a streaming endpoint.",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n  \"model\": \"llama2\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Hello!\"\n    }\n  ]\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1712076065467,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_create_a_model",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390866,
+        "created": 1712076065468,
+        "url": "{{ _.BASE_URL }}/create",
+        "name": "Create a Model",
+        "description": "Create a model from a Modelfile.",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n  \"name\": \"my_model\",\n  \"modelfile\": \"FROM llama2\\nSYSTEM You are using my custom model.\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1712076065468,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_list_local_models",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390867,
+        "created": 1712076065469,
+        "url": "{{ _.BASE_URL }}/tags",
+        "name": "List Local Models",
+        "description": "List models that are available locally.",
+        "method": "GET",
+        "body": {
+          "mimeType": ""
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1712076065469,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      },
+      {
+        "_id": "req_show_model_information",
+        "parentId": "wrk_ollama_api",
+        "modified": 1712090390868,
+        "created": 1712076065470,
+        "url": "{{ _.BASE_URL }}/show",
+        "name": "Show Model Information",
+        "description": "Show information about a model including details, modelfile, template, parameters, license, and system prompt.",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n  \"name\": \"llama2\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1712076065470,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global",
+        "_type": "request"
+      }
+    ]
+  }
+  

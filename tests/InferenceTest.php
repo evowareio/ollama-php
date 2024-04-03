@@ -3,18 +3,21 @@
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Client;
 use Evoware\OllamaPHP\OllamaClient;
 
 class InferenceTest extends TestCase
 {
-    private OllamaClient $client;
+    private OllamaClient $ollamaClient;
+    private Client $guzzleClient;
 
     protected function setUp(): void
     {
-        $response = '{
+        $mockResponse = '{
             "model": "llama2",
             "created_at": "2023-11-09T21:07:55.186497Z",
-            "response": "Oh, what a great test this is.",
+            "mockResponse$mockResponse": "Oh, what a great test this is.",
             "done": true,
             "context": [],
             "total_duration": 4648158584,
@@ -23,12 +26,21 @@ class InferenceTest extends TestCase
             "prompt_eval_duration": 439038000,
             "eval_count": 180,
             "eval_duration": 4196918000
-          }';
+        }';
 
-        $guzzleHandler = new MockHandler([
-            new Response(200, [], $response),
+        $mockHandler = new MockHandler([
+            new Response(200, [], $mockResponse)
         ]);
+        // Create a Guzzle client with the mocked handler
+        $this->guzzleClient = new Client(['handler' => HandlerStack::create($mockHandler)]);
 
-        $this->client = $this->createMock(OllamaClient::class);
+        // Initialize OllamaClient with the mocked Guzzle client
+        $this->ollamaClient = new OllamaClient($this->guzzleClient);
+    }
+
+    public function testInference()
+    {
+        $ollamaResponse = $this->ollamaClient->generateCompletion('llama2', 'Hello, world!');
+        $this->assertEquals('Oh, what a great test this is.', $ollamaResponse->getResponse());
     }
 }

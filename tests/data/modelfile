@@ -1,0 +1,4 @@
+FROM mistral:7b
+TEMPLATE """[INST] {{ .System }} {{ .Prompt }} [/INST]"""
+PARAMETER stop "[INST]"
+PARAMETER stop "[/INST]"

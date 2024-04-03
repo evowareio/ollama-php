@@ -1,0 +1,14 @@
+FROM mistral:7b
+TEMPLATE """[INST] {{ if .System }}<<SYS>>{{ .System }}<</SYS>>
+
+{{ end }}{{ .Prompt }} [/INST] """
+SYSTEM """
+You are a helpful assistant. 
+Your role is to perform the tasks given by the user
+"""
+PARAMETER stop "[INST]"
+PARAMETER stop "[/INST]"
+PARAMETER temperature 0.2
+PARAMETER mirostat 2
+PARAMETER top_k 40
+PARAMETER top_p 0.9

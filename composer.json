@@ -1,6 +1,6 @@
 {
-    "name": "evowareio/ollama-php",
-    "description": "A library for integrating Ollama into PHP",
+    "name": "evoware/ollama-php",
+    "description": "A PHP library for interacting with local Ollama server.",
     "type": "library",
     "license": "GNU GPLv3",
     "autoload": {

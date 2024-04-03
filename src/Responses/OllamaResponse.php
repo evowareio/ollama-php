@@ -3,49 +3,40 @@
 namespace Evoware\OllamaPHP\Responses;
 
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Psr7\Response;
-use DateTime;
 
 class OllamaResponse
 {
-    protected string $json;
-    protected Response $httpResponse;
-    protected string $model;
-    protected DateTime $createdAt;
-    protected string $response;
-    protected bool $done;
-    protected array $context;
-    protected int $totalDuration;
-    protected int $loadDuration;
-    protected int $promptEvalCount;
-    protected int $promptEvalDuration;
-    protected int $evalCount;
-    protected int $evalDuration;
+    protected ResponseInterface $guzzleResponse;
+    protected array $data;
 
     public function __construct(ResponseInterface $response)
     {
-        $this->httpResponse = $response;
-        $this->json = $response->getBody()->getContents();
-
-        $data = json_decode($this->json, true, 512, JSON_THROW_ON_ERROR);
-
-        // TODO: add validation for all possible fields of the response
-
-        $this->model = $data['model'];
-        $this->createdAt = DateTime::createFromFormat(DateTime::ATOM, $data['created_at']);
-        $this->response = $data['response'];
-        $this->done = $data['done'];
-        $this->context = $data['context'];
-        $this->totalDuration = $data['total_duration'];
-        $this->loadDuration = $data['load_duration'];
-        $this->promptEvalCount = $data['prompt_eval_count'];
-        $this->promptEvalDuration = $data['prompt_eval_duration'];
-        $this->evalCount = $data['eval_count'];
-        $this->evalDuration = $data['eval_duration'];
+        $this->guzzleResponse = $response;
+        $this->data = json_decode($this->guzzleResponse->getBody()->getContents(), true);
     }
 
-    public function getHttpResponse(): Response
+    public function getResponse(): ?string
     {
-        return $this->httpResponse;
+        return $this->data['response'] ?? null;
+    }
+
+    public function getModelName(): ?string
+    {
+        return $this->data['model'] ?? null;
+    }
+
+    public function getCreatedAt(): ?string
+    {
+        return $this->data['created_at'] ?? null;
+    }
+
+    public function getHttpResponse(): ?ResponseInterface
+    {
+        return $this->guzzleResponse;
+    }
+
+    public function isDone(): ?bool
+    {
+        return $this->data['done'] ?? false;
     }
 }
