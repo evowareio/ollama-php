@@ -7,8 +7,8 @@ class ChatCompletionResponse extends CompletionResponse
     /**
      * @return string|null
      */
-    public function getResponse(): ?string
+    public function getResponse(): array
     {
-        return $this->data['message'] ?? null;
+        return $this->data['message'] ?? [];
     }
 }

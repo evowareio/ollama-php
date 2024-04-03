@@ -15,7 +15,7 @@ class CompletionResponse extends OllamaResponse
     /**
      * @return string|null
      */
-    public function getResponse(): ?string
+    public function getResponse(): mixed
     {
         return $this->data['response'] ?? null;
     }
@@ -74,5 +74,10 @@ class CompletionResponse extends OllamaResponse
     public function getEvalDuration(): ?int
     {
         return $this->data['eval_duration'] ?? null;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getResponse();
     }
 }

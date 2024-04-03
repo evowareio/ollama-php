@@ -4,20 +4,26 @@ namespace Evoware\OllamaPHP\Responses;
 
 use Psr\Http\Message\ResponseInterface;
 
-class OllamaResponse
+class OllamaResponse implements OllamaResponseInterface
 {
     protected ResponseInterface $guzzleResponse;
     protected array $data;
 
     public function __construct(ResponseInterface $response)
     {
+        $contents = $response->getBody()->getContents();
         $this->guzzleResponse = $response;
-        $this->data = json_decode($this->guzzleResponse->getBody()->getContents(), true);
+
+        if (is_array($contents)) {
+            $this->data = $contents;
+        } else {
+            $this->data = json_decode($contents, true);
+        }
     }
 
-    public function getResponse(): ?string
+    public function getResponse(): mixed
     {
-        return $this->data['response'] ?? null;
+        return $this->data ?? null;
     }
 
     public function getModelName(): ?string
@@ -30,13 +36,18 @@ class OllamaResponse
         return $this->data['created_at'] ?? null;
     }
 
-    public function getHttpResponse(): ?ResponseInterface
+    public function getHttpResponse(): ResponseInterface
     {
         return $this->guzzleResponse;
     }
 
-    public function isDone(): ?bool
+    public function isDone(): bool
     {
-        return $this->data['done'] ?? false;
+        return (bool) $this->data['done'] ?? false;
+    }
+
+    public function getStatusCode(): int
+    {
+        return $this->guzzleResponse->getStatusCode();
     }
 }

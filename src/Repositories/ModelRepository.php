@@ -51,7 +51,7 @@ class ModelRepository
             'destination' => $destination,
         ]);
 
-        return $response->getStatusCode() === 200 && json_decode($response->getBody()->getContents(), true)['success'] === true;
+        return $response->getStatusCode() === 200 && json_decode($response->getBody()->getContents(), true)['status'] === 'success';
     }
 
     public function delete($modelName): bool
@@ -60,7 +60,7 @@ class ModelRepository
             'name' => $modelName,
         ]);
 
-        return $response->getStatusCode() === 204 && json_decode($response->getBody()->getContents(), true)['success'] === true;
+        return $response->getStatusCode() === 204 && json_decode($response->getBody()->getContents(), true)['status'] === 'success';
     }
 
     public function pull($modelName, $stream = false): bool
@@ -70,7 +70,7 @@ class ModelRepository
             'stream' => $stream,
         ]);
 
-        return $response->getStatusCode() === 200 && json_decode($response->getBody()->getContents(), true)['success'] === true;
+        return $response->getStatusCode() === 200 && json_decode($response->getBody()->getContents(), true)['status'] === 'success';
     }
 
     public function push($modelName, $stream = false): bool
@@ -80,7 +80,7 @@ class ModelRepository
             'stream' => $stream,
         ]);
 
-        return $response->getStatusCode() === 200;
+        return $response->getStatusCode() === 201 && json_decode($response->getBody()->getContents(), true)['status'] === 'succsss';
     }
 
     protected function makeRequest(string $method, string $uri, array $data = [])
