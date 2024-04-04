@@ -8,7 +8,6 @@ use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
 use Evoware\OllamaPHP\Responses\CompletionResponse;
 use Evoware\OllamaPHP\Responses\EmbeddingResponse;
 use Evoware\OllamaPHP\Traits\MocksHttpRequests;
-use PHPUnit\Framework\TestCase;
 
 class OllamaClientTest extends TestCase
 {

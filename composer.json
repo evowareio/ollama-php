@@ -8,6 +8,11 @@
             "Evoware\\OllamaPHP\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Evoware\\OllamaPHP\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Mikolaj Ilczyna",
@@ -22,5 +27,11 @@
     "require-dev": {
         "laravel/pint": ">=1.15",
         "phpunit/phpunit": "^11.0"
+    },
+    "extra": {
+        "php-composter-hooks": {
+          "pre-commit": "./vendor/bin/phpunit"
+        }
     }
+
 }

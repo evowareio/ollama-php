@@ -9,9 +9,6 @@ class CompletionResponse extends OllamaResponse
         return $this->data['model'] ?? null;
     }
 
-    /**
-     * @return string|null
-     */
     public function getResponse(): mixed
     {
         return $this->data['response'] ?? null;

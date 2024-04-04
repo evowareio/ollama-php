@@ -8,4 +8,9 @@ class EmbeddingResponse extends OllamaResponse
     {
         return $this->data['embedding'] ?? [];
     }
+
+    public function __toString(): string
+    {
+        return json_encode($this->getResponse());
+    }
 }
