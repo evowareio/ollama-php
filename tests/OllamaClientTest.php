@@ -17,7 +17,7 @@ class OllamaClientTest extends TestCase
     {
         $httpClient = new \GuzzleHttp\Client();
         $ollamaClient = new OllamaClient($httpClient);
-        
+
         $this->assertInstanceOf(OllamaClient::class, $ollamaClient);
     }
 

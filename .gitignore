@@ -1,3 +1,4 @@
 vendor/
 .devcontainer/
 .github/
+.phpunit.result.cache
