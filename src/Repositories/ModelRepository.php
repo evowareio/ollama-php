@@ -2,10 +2,10 @@
 
 namespace Evoware\OllamaPHP\Repositories;
 
-use GuzzleHttp\ClientInterface;
-use Evoware\OllamaPHP\Traits\MakesHttpRequests;
-use Evoware\OllamaPHP\Models\ModelFile;
 use Evoware\OllamaPHP\DataObjects\Model;
+use Evoware\OllamaPHP\Models\ModelFile;
+use Evoware\OllamaPHP\Traits\MakesHttpRequests;
+use GuzzleHttp\ClientInterface;
 
 class ModelRepository
 {
@@ -45,11 +45,10 @@ class ModelRepository
         return array_map(fn ($item) => new Model($item), json_decode($response->getData(), true));
     }
 
-
     /**
      * Retrieves information about a specific model.
      *
-     * @param string $modelName The name of the model.
+     * @param  string  $modelName  The name of the model.
      * @return Model The model object containing the retrieved information.
      */
     public function info(string $modelName): Model
@@ -65,8 +64,8 @@ class ModelRepository
     /**
      * Copy a model from the source to the destination.
      *
-     * @param string $source The source file path.
-     * @param string $destination The destination file path.
+     * @param  string  $source  The source file path.
+     * @param  string  $destination  The destination file path.
      * @return bool Returns true if the file was successfully copied, false otherwise.
      */
     public function copy($source, $destination): bool
@@ -83,7 +82,7 @@ class ModelRepository
     /**
      * Deletes a model.
      *
-     * @param string $modelName The name of the model to delete.
+     * @param  string  $modelName  The name of the model to delete.
      * @return bool Returns true if the model was deleted successfully, false otherwise.
      */
     public function delete($modelName): bool
@@ -99,7 +98,7 @@ class ModelRepository
     /**
      * Pulls a model from the library.
      *
-     * @param string $modelName The name of the model to pull.
+     * @param  string  $modelName  The name of the model to pull.
      * @return bool Returns true if the model was pulled successfully, false otherwise.
      */
     public function pull($modelName): bool
@@ -115,7 +114,7 @@ class ModelRepository
     /**
      * Pushes a model to the library.
      *
-     * @param string $modelName The name of the model to push.
+     * @param  string  $modelName  The name of the model to push.
      * @return bool Returns true if the push was successful, false otherwise.
      */
     public function push($modelName): bool

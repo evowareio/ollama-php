@@ -2,9 +2,9 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use Evoware\OllamaPHP\Traits\MocksHttpRequests;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
 use Evoware\OllamaPHP\OllamaClient;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Traits\MocksHttpRequests;
 
 class IntegrationTest extends TestCase
 {

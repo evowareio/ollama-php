@@ -2,13 +2,13 @@
 
 namespace Evoware\OllamaPHP\Traits;
 
-use GuzzleHttp\ClientInterface;
-use Evoware\OllamaPHP\Responses\OllamaResponseInterface;
-use Evoware\OllamaPHP\Responses\OllamaResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
 use Evoware\OllamaPHP\Exceptions\OllamaException;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\OllamaResponse;
+use Evoware\OllamaPHP\Responses\OllamaResponseInterface;
+use GuzzleHttp\ClientInterface;
 
 trait MakesHttpRequests
 {

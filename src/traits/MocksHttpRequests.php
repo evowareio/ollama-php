@@ -2,10 +2,10 @@
 
 namespace Evoware\OllamaPHP\Traits;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Client;
 
 trait MocksHttpRequests
 {
@@ -13,10 +13,10 @@ trait MocksHttpRequests
      * Create a Guzzle Client with a Mock Handler.
      *
      * @param  array  $responses  An array of responses to mock.
-     *                            Each response should be a nested array containing the response code, headers, and body.
+     * Each response should be a nested array containing the response code, headers, and body.
      * @return Client A Guzzle Client with a Mock Handler.
      */
-    protected function mockHttpClient(array $responses): Client
+    protected function mockHttpClient(array $responses = []): Client
     {
         $mockResponses = [];
 

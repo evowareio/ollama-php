@@ -25,7 +25,7 @@ class OllamaResponse implements OllamaResponseInterface
     /**
      * Retrieves the data stored in the OllamaResponse object.
      *
-     * @param string|null $key The key of the data to retrieve. If null, returns all the data.
+     * @param  string|null  $key  The key of the data to retrieve. If null, returns all the data.
      * @return mixed The retrieved data. If the key is not found, returns null.
      */
     public function getData(?string $key = null): mixed

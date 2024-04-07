@@ -2,12 +2,12 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use Evoware\OllamaPHP\Traits\MocksHttpRequests;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Repositories\ModelRepository;
 use Evoware\OllamaPHP\OllamaClient;
+use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Traits\MocksHttpRequests;
 
 class OllamaClientTest extends TestCase
 {
@@ -15,15 +15,16 @@ class OllamaClientTest extends TestCase
 
     public function tesHttpClientInjection()
     {
-        $httpClient = new \GuzzleHttp\Client();
+        $httpClient = $this->mockHttpClient();
         $ollamaClient = new OllamaClient($httpClient);
 
         $this->assertInstanceOf(OllamaClient::class, $ollamaClient);
+        $this->assertEquals($httpClient, $ollamaClient->getHttpClient());
     }
 
     public function testHttpClientInjectionWithOptions()
     {
-        $httpClient = new \GuzzleHttp\Client();
+        $httpClient = $this->mockHttpClient();
         $options = [
             'base_uri' => 'http://localhost:11434',
             'headers' => [
@@ -34,6 +35,7 @@ class OllamaClientTest extends TestCase
         $ollamaClient = new OllamaClient($httpClient, $options);
 
         $this->assertInstanceOf(OllamaClient::class, $ollamaClient);
+        $this->assertEquals($httpClient, $ollamaClient->getHttpClient());
     }
 
     public function testModelChainAccess()
@@ -53,30 +55,30 @@ class OllamaClientTest extends TestCase
     public function testGenerateCompletion()
     {
         $httpClient = $this->mockHttpClient([
-            [200, ['Content-Type' => 'application/json'], '{"response":"Generated completion goes here.","done":true}'],
+            [200, ['Content-Type' => 'application/json'], '{"response":"Generated response$response goes here.","done":true}'],
         ]);
         $ollamaClient = new OllamaClient($httpClient);
         $prompt = 'Hello, ';
-        $completion = $ollamaClient->generateCompletion($prompt, 'mistral');
+        $response = $ollamaClient->generateCompletion($prompt, 'mistral');
 
-        $this->assertIsString($completion->getResponse());
+        $this->assertIsString($response->getResponse());
     }
 
     public function testGenerateCompletionWithOptions()
     {
         $httpClient = $this->mockHttpClient([
-            [200, ['Content-Type' => 'application/json'], '{"response":"Generated completion goes here.","done":true}'],
+            [200, ['Content-Type' => 'application/json'], '{"response":"Generated response$response goes here.","done":true}'],
         ]);
         $ollamaClient = new OllamaClient($httpClient);
         $prompt = 'Hello, ';
-        $completion = $ollamaClient->generateCompletion($prompt, modelOptions: [
+        $response = $ollamaClient->generateCompletion($prompt, modelOptions: [
             'max_tokens' => 50,
             'temperature' => 0.5,
         ]);
 
-        $this->assertInstanceOf(CompletionResponse::class, $completion);
-        $this->assertNotEmpty($completion->getResponse());
-        $this->assertStringStartsWith('Generated completion ', $completion->getResponse());
+        $this->assertInstanceOf(CompletionResponse::class, $response);
+        $this->assertNotEmpty($response->getResponse());
+        $this->assertStringStartsWith('Generated response$response ', $response->getResponse());
     }
 
     public function testGenerateChatCompletion()
@@ -88,10 +90,10 @@ class OllamaClientTest extends TestCase
         $messages = [
             ['role' => 'user', 'content' => 'What is the weather like today?'],
         ];
-        $completion = $ollamaClient->generateChatCompletion($messages, 'mistral');
+        $response = $ollamaClient->generateChatCompletion($messages, 'mistral');
 
-        $this->assertIsArray($completion->getMessage());
-        $this->assertEquals(['role' => 'user', 'content' => 'Chat response test here!'], $completion->getMessage());
+        $this->assertIsArray($response->getMessage());
+        $this->assertEquals(['role' => 'user', 'content' => 'Chat response test here!'], $response->getMessage());
     }
 
     public function testGenerateChatCompletionWithOptions()
@@ -104,14 +106,14 @@ class OllamaClientTest extends TestCase
             ['role' => 'user', 'content' => 'What is the weather like today?'],
         ];
 
-        $completion = $ollamaClient->generateChatCompletion($messages, modelOptions: [
+        $response = $ollamaClient->generateChatCompletion($messages, modelOptions: [
             'max_tokens' => 50,
             'temperature' => 0.5,
             'model' => 'mistral',
         ]);
-        $this->assertInstanceOf(ChatCompletionResponse::class, $completion);
-        $this->assertNotEmpty($completion->getMessage());
-        $this->assertIsArray($completion->getMessage());
+        $this->assertInstanceOf(ChatCompletionResponse::class, $response);
+        $this->assertNotEmpty($response->getMessage());
+        $this->assertIsArray($response->getMessage());
     }
 
     public function testGenerateEmbeddings()
@@ -128,7 +130,7 @@ class OllamaClientTest extends TestCase
             -0.137906014919281,
         ];
         $httpClient = $this->mockHttpClient([
-            [200, ['Content-Type' => 'application/json'], json_encode(['embedding' => $testEmbedding])],
+            [200, ['Content-Type' => 'application/json'], ['embedding' => $testEmbedding]],
         ]);
         $ollamaClient = new OllamaClient($httpClient);
         $inputText = 'Test';

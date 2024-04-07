@@ -2,14 +2,14 @@
 
 namespace Evoware\OllamaPHP;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Client;
-use Evoware\OllamaPHP\Traits\MakesHttpRequests;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Repositories\ModelRepository;
 use Evoware\OllamaPHP\Models\ModelFile;
+use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Traits\MakesHttpRequests;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 
 /**
  * OllamaClient is the main class for interacting with the Ollama API.
@@ -24,7 +24,7 @@ class OllamaClient
 
     private ?ModelFile $modelfile = null;
 
-    public function __construct(ClientInterface $httpClient = null, array $clientOptions = [])
+    public function __construct(?ClientInterface $httpClient = null, array $clientOptions = [])
     {
         $this->client = $httpClient ?? new Client($clientOptions);
     }
