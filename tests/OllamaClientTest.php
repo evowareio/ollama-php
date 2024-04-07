@@ -2,12 +2,12 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use Evoware\OllamaPHP\OllamaClient;
-use Evoware\OllamaPHP\Repositories\ModelRepository;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
 use Evoware\OllamaPHP\Traits\MocksHttpRequests;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\OllamaClient;
 
 class OllamaClientTest extends TestCase
 {
@@ -17,6 +17,7 @@ class OllamaClientTest extends TestCase
     {
         $httpClient = new \GuzzleHttp\Client();
         $ollamaClient = new OllamaClient($httpClient);
+        
         $this->assertInstanceOf(OllamaClient::class, $ollamaClient);
     }
 
@@ -75,7 +76,7 @@ class OllamaClientTest extends TestCase
 
         $this->assertInstanceOf(CompletionResponse::class, $completion);
         $this->assertNotEmpty($completion->getResponse());
-        $this->assertStringStartsWith('Generated completion ', $completion);
+        $this->assertStringStartsWith('Generated completion ', $completion->getResponse());
     }
 
     public function testGenerateChatCompletion()
@@ -89,8 +90,8 @@ class OllamaClientTest extends TestCase
         ];
         $completion = $ollamaClient->generateChatCompletion($messages, 'mistral');
 
-        $this->assertIsArray($completion->getResponse());
-        $this->assertEquals(['role' => 'user', 'content' => 'Chat response test here!'], $completion->getResponse());
+        $this->assertIsArray($completion->getMessage());
+        $this->assertEquals(['role' => 'user', 'content' => 'Chat response test here!'], $completion->getMessage());
     }
 
     public function testGenerateChatCompletionWithOptions()
@@ -109,8 +110,8 @@ class OllamaClientTest extends TestCase
             'model' => 'mistral',
         ]);
         $this->assertInstanceOf(ChatCompletionResponse::class, $completion);
-        $this->assertNotEmpty($completion->getResponse());
-        $this->assertIsArray($completion->getResponse());
+        $this->assertNotEmpty($completion->getMessage());
+        $this->assertIsArray($completion->getMessage());
     }
 
     public function testGenerateEmbeddings()
@@ -134,7 +135,7 @@ class OllamaClientTest extends TestCase
 
         $response = $ollamaClient->generateEmbeddings($inputText, 'nomic-embed-text');
 
-        $this->assertEquals($testEmbedding, $response->getResponse());
+        $this->assertEquals($testEmbedding, $response->getEmbedding());
     }
 
     public function testGenerateEmbeddingsWithOptions()
@@ -155,7 +156,7 @@ class OllamaClientTest extends TestCase
         $response = $ollamaClient->generateEmbeddings($prompt, modelName: 'nomic-embed-text', modelOptions: ['stream' => false]);
 
         $this->assertInstanceOf(EmbeddingResponse::class, $response);
-        $this->assertIsArray($response->getResponse());
-        $this->assertEquals(0.5670403838157654, $response->getResponse()[0]);
+        $this->assertIsArray($response->getEmbedding());
+        $this->assertEquals(0.5670403838157654, $response->getEmbedding()[0]);
     }
 }

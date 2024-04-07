@@ -4,13 +4,13 @@ namespace Evoware\OllamaPHP\Responses;
 
 class EmbeddingResponse extends OllamaResponse
 {
-    public function getResponse(): array
+    public function getEmbedding(): array
     {
-        return $this->data['embedding'] ?? [];
+        return $this->getData('embedding');
     }
 
     public function __toString(): string
     {
-        return json_encode($this->getResponse());
+        return json_encode($this->getData('embedding'));
     }
 }

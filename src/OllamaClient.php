@@ -2,23 +2,21 @@
 
 namespace Evoware\OllamaPHP;
 
-use Evoware\OllamaPHP\Models\ModelFile;
-use Evoware\OllamaPHP\Repositories\ModelRepository;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\OllamaResponse;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
+use Evoware\OllamaPHP\Traits\MakesHttpRequests;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\Models\ModelFile;
 
 /**
- * Represents a client for interacting with the Ollama API.
- *
- * This class provides methods for making requests to the Ollama API and
- * handling the responses.
+ * OllamaClient is the main class for interacting with the Ollama API.
  */
 class OllamaClient
 {
-    private ClientInterface $httpClient;
+    use MakesHttpRequests;
 
     private ModelRepository $modelRepository;
 
@@ -26,9 +24,9 @@ class OllamaClient
 
     private ?ModelFile $modelfile = null;
 
-    public function __construct(ClientInterface $httpClient)
+    public function __construct(ClientInterface $httpClient = null, array $clientOptions = [])
     {
-        $this->httpClient = $httpClient;
+        $this->client = $httpClient ?? new Client($clientOptions);
     }
 
     /**
@@ -38,17 +36,10 @@ class OllamaClient
     public function getModelRepository(): ModelRepository
     {
         if (! isset($this->modelRepository)) {
-            $this->modelRepository = new ModelRepository($this->httpClient);
+            $this->modelRepository = new ModelRepository($this->client);
         }
 
         return $this->modelRepository;
-    }
-
-    public function fromModelFile(ModelFile $modelfile)
-    {
-        $this->modelfile = $modelfile;
-
-        return $this;
     }
 
     /**
@@ -69,10 +60,10 @@ class OllamaClient
         $jsonData = array_merge([
             'model' => $this->modelName,
             'prompt' => $prompt,
-            'options' => $modelOptions,
+            'clientOptions' => $modelOptions,
         ], $this->getModelOptions());
 
-        return $this->callEndpoint('generate', $jsonData);
+        return $this->post('generate', $jsonData);
     }
 
     /**
@@ -86,18 +77,18 @@ class OllamaClient
         $jsonData = array_merge([
             'model' => $this->modelName,
             'messages' => $messages,
-            'options' => $modelOptions,
+            'clientOptions' => $modelOptions,
         ], $this->getModelOptions());
 
-        return $this->callEndpoint('chat', $jsonData);
+        return $this->post('chat', $jsonData);
     }
 
     /**
-     * Generate embeddings for a given prompt using the specified model or options.
+     * Generate embeddings for a given prompt using the specified model or clientOptions.
      *
      * @param  string  $prompt  The prompt for which to generate embeddings.
      * @param  string|null  $modelName  The name of the model to use.
-     * @param  array  $modelOptions  Additional options for the model.
+     * @param  array  $modelOptions  Additional clientOptions for the model.
      * @return EmbeddingResponse The response containing the generated embeddings.
      */
     public function generateEmbeddings(string|array $prompt, ?string $modelName = null, array $modelOptions = []): EmbeddingResponse
@@ -114,7 +105,7 @@ class OllamaClient
             $prompt = implode("\n", $prompt);
         }
 
-        return $this->callEndpoint('embeddings', ['model' => $this->modelName, 'prompt' => $prompt, 'modelOptions' => $modelOptions]);
+        return $this->post('embeddings', ['model' => $this->modelName, 'prompt' => $prompt, 'modelOptions' => $modelOptions]);
     }
 
     /**
@@ -124,7 +115,7 @@ class OllamaClient
      */
     public function getHttpClient(): ClientInterface
     {
-        return $this->httpClient;
+        return $this->getClient();
     }
 
     /**
@@ -149,34 +140,6 @@ class OllamaClient
     }
 
     /**
-     * Call the specified endpoint with the provided data.
-     *
-     * @param  string  $endpoint  The endpoint to call.
-     * @param  array  $data  The data to send to the endpoint.
-     * @return OllamaResponse The response from the endpoint.
-     */
-    private function callEndpoint(string $endpoint, array $data): OllamaResponse
-    {
-        try {
-            $data['stream'] = false;
-            $response = $this->httpClient->request('POST', $endpoint, ['json' => json_encode($data)]);
-        } catch (\Exception $e) {
-            throw new \Evoware\OllamaPHP\Exceptions\RequestException($e->getMessage(), $e->getCode(), $e);
-        }
-
-        switch ($endpoint) {
-            case 'generate':
-                return new CompletionResponse($response);
-            case 'chat':
-                return new ChatCompletionResponse($response);
-            case 'embeddings':
-                return new EmbeddingResponse($response);
-            default:
-                return new OllamaResponse($response);
-        }
-    }
-
-    /**
      * Get the model modelRepository.
      * The model modelRepository is used to create and manage models.
      */
@@ -190,8 +153,8 @@ class OllamaClient
     }
 
     /**
-     * Get the model options.
-     * Returns an array of model options based on the current model file.
+     * Get the model clientOptions.
+     * Returns an array of model clientOptions based on the current model file.
      */
     private function getModelOptions(): array
     {

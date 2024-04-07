@@ -2,13 +2,10 @@
 
 namespace Evoware\OllamaPHP\Responses;
 
-class ChatCompletionResponse extends CompletionResponse
+class ChatCompletionResponse extends InferenceResponse
 {
-    /**
-     * @return string|null
-     */
-    public function getResponse(): array
+    public function getMessage()
     {
-        return $this->data['message'] ?? [];
+        return $this->getData('message');
     }
 }

@@ -8,7 +8,7 @@ class OllamaResponse implements OllamaResponseInterface
 {
     protected ResponseInterface $guzzleResponse;
 
-    protected array $data;
+    protected array $data = [];
 
     public function __construct(ResponseInterface $response)
     {
@@ -22,9 +22,15 @@ class OllamaResponse implements OllamaResponseInterface
         }
     }
 
-    public function getResponse(): mixed
+    /**
+     * Retrieves the data stored in the OllamaResponse object.
+     *
+     * @param string|null $key The key of the data to retrieve. If null, returns all the data.
+     * @return mixed The retrieved data. If the key is not found, returns null.
+     */
+    public function getData(?string $key = null): mixed
     {
-        return $this->data ?? null;
+        return $key ? $this->data[$key] ?? null : $this->data;
     }
 
     public function getModelName(): ?string
@@ -50,5 +56,10 @@ class OllamaResponse implements OllamaResponseInterface
     public function getStatusCode(): int
     {
         return $this->guzzleResponse->getStatusCode();
+    }
+
+    public function isSuccessful(): bool
+    {
+        return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
     }
 }

@@ -33,5 +33,4 @@
           "pre-commit": "./vendor/bin/phpunit"
         }
     }
-
 }

@@ -2,9 +2,9 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use Evoware\OllamaPHP\OllamaClient;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
 use Evoware\OllamaPHP\Traits\MocksHttpRequests;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\OllamaClient;
 
 class IntegrationTest extends TestCase
 {
@@ -41,7 +41,7 @@ class IntegrationTest extends TestCase
     public function testGenerateCompletionFailure()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Internal Server Error');
+        $this->expectExceptionMessage('Request to Ollama API failed');
 
         $httpClient = $this->mockHttpClient([
             [500, ['Content-Type' => 'application/json'], json_encode(['error' => 'Internal Server Error'])],
@@ -55,9 +55,9 @@ class IntegrationTest extends TestCase
 
         $this->assertInstanceOf(CompletionResponse::class, $response);
 
-        $this->assertEquals(500, $response->getHttpResponse()->getStatusCode());
+        $this->assertEquals(500, $response->getStatusCode());
 
         $this->assertEmpty($response->getResponse());
-        $this->assertFalse($response->isDone());
+        $this->assertFalse($response->isSuccessful());
     }
 }
