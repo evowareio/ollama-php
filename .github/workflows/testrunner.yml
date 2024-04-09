@@ -1,0 +1,25 @@
+name: PHP Unit Tests
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+    - uses: php-actions/composer@v6
+    - run: echo "Composer dependencies have been installed"
+    - name: Tests
+      uses: php-actions/phpunit@v3
+      with:
+        php_version: 8.2
