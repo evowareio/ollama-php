@@ -29,7 +29,6 @@ class Model
 
     public function __construct(array $data)
     {
-        // validate all fields in minimalist way
         foreach (['name', 'model', 'size', 'digest', 'modified_at', 'details'] as $key) {
             if (!isset($data[$key]) || empty($data[$key])) {
                 throw new \Exception('Missing required field: ' . $key);

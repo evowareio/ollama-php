@@ -2,13 +2,17 @@
 
 namespace Evoware\OllamaPHP\Traits;
 
-use Evoware\OllamaPHP\Exceptions\OllamaException;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Responses\OllamaResponse;
-use Evoware\OllamaPHP\Responses\OllamaResponseInterface;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\ClientInterface;
+use Evoware\OllamaPHP\Responses\OllamaResponseInterface;
+use Evoware\OllamaPHP\Responses\OllamaResponse;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Exceptions\OllamaServerException;
+use Evoware\OllamaPHP\Exceptions\OllamaException;
+use Evoware\OllamaPHP\Exceptions\OllamaClientException;
 
 trait MakesHttpRequests
 {
@@ -26,9 +30,12 @@ trait MakesHttpRequests
             $response = $this->client->request($method, $endpoint, [
                 'json' => $data,
             ]);
+        } catch (ClientException $e) {
+            throw new OllamaClientException($e->getMessage(), $e->getCode(), $e);
+        } catch (ServerException $e) {
+            throw new OllamaServerException($e->getMessage(), $e->getCode(), $e);
         } catch (\Exception $e) {
-            error_log($e->getMessage());
-            throw new OllamaException('Request to Ollama API failed', $e->getCode(), $e);
+            throw new OllamaException($e->getMessage(), $e->getCode(), $e);
         }
 
         switch ($endpoint) {

@@ -155,6 +155,49 @@ class ModelFile
         return json_encode($this->toArray(), $options);
     }
 
+
+    public function __toString(): string
+    {
+        $lines = [];
+
+        if ($this->template) {
+            $lines[] = "TEMPLATE {$this->template}";
+        }
+
+        if ($this->parent) {
+            $lines[] = "FROM {$this->parent}";
+        }
+
+        foreach (self::VALID_PARAMETERS as $parameter => $value) {
+            if (isset($this->parameters[$parameter])) {
+                $lines[] = "PARAMETER {$parameter} {$this->parameters[$parameter]}";
+            }
+        }
+
+        if ($this->system) {
+            $lines[] = "SYSTEM {$this->system}";
+        }
+
+        if ($this->adapter) {
+            $lines[] = "ADAPTER {$this->adapter}";
+        }
+
+        if ($this->license) {
+            $lines[] = "LICENSE {$this->license}";
+        }
+
+        foreach ($this->chatHistory as $message) {
+            $lines[] = "MESSAGE {$message['role']} {$message['message']}";
+        }
+
+        foreach ($this->details as $key => $value) {
+            $lines[] = "DETAIL {$key} {$value}";
+        }
+
+        return implode("\n", $lines);
+    }
+
+
     /** Getters */
     public function getParent(): string
     {

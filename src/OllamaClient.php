@@ -2,14 +2,16 @@
 
 namespace Evoware\OllamaPHP;
 
-use Evoware\OllamaPHP\Models\ModelFile;
-use Evoware\OllamaPHP\Repositories\ModelRepository;
-use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
-use Evoware\OllamaPHP\Responses\CompletionResponse;
-use Evoware\OllamaPHP\Responses\EmbeddingResponse;
-use Evoware\OllamaPHP\Traits\MakesHttpRequests;
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
+use Evoware\OllamaPHP\Traits\ValidatesFields;
+use Evoware\OllamaPHP\Traits\MakesHttpRequests;
+use Evoware\OllamaPHP\Responses\EmbeddingResponse;
+use Evoware\OllamaPHP\Responses\CompletionResponse;
+use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
+use Evoware\OllamaPHP\Repositories\ModelRepository;
+use Evoware\OllamaPHP\Models\ModelFile;
+use Evoware\OllamaPHP\Exceptions\OllamaClientException;
 
 /**
  * OllamaClient is the main class for interacting with the Ollama API.
@@ -17,6 +19,7 @@ use GuzzleHttp\ClientInterface;
 class OllamaClient
 {
     use MakesHttpRequests;
+    use ValidatesFields;
 
     private ModelRepository $modelRepository;
 
@@ -35,7 +38,7 @@ class OllamaClient
      */
     public function getModelRepository(): ModelRepository
     {
-        if (! isset($this->modelRepository)) {
+        if (!isset($this->modelRepository)) {
             $this->modelRepository = new ModelRepository($this->client);
         }
 
@@ -48,14 +51,11 @@ class OllamaClient
      * @param  string  $prompt  The prompt for generating the completion.
      * @param  string|null  $modelName  (Optional) The name of the model to use for completion.
      * @param  array  $modelOptions  (Optional) Additional modelOptions for generating the completion.
+     * @throws OllamaClientException
      */
     public function generateCompletion(string $prompt, ?string $modelName = null, array $modelOptions = []): CompletionResponse
     {
-        if (! empty($modelName)) {
-            $this->modelName = $modelName;
-        } elseif (isset($modelOptions['model'])) {
-            $this->modelName = $modelOptions['model'];
-        }
+        $this->validate(['model'], array_merge(['model' => $modelName ?? $this->modelName], $modelOptions));
 
         $jsonData = array_merge([
             'model' => $this->modelName,
@@ -70,10 +70,14 @@ class OllamaClient
      * Generate a chat completion response.
      *
      * @param  array  $messages  list of chat messages
-     * @param  array  $modelOptions  modelOptions for the model
+     * @param  string|null  $modelName  (Optional) The name of the model to use for completion.
+     * @param  array|null  $modelOptions  modelOptions for the model
+     * @throws OllamaClientException
      */
     public function generateChatCompletion(array $messages = [], ?string $modelName = null, array $modelOptions = []): ChatCompletionResponse
     {
+        $this->validate(['model'], array_merge(['model' => $modelName ?? $this->modelName], $modelOptions));
+
         $jsonData = array_merge([
             'model' => $this->modelName,
             'messages' => $messages,
@@ -88,18 +92,13 @@ class OllamaClient
      *
      * @param  string  $prompt  The prompt for which to generate embeddings.
      * @param  string|null  $modelName  The name of the model to use.
-     * @param  array  $modelOptions  Additional clientOptions for the model.
+     * @param  array|null $modelOptions  Additional clientOptions for the model.
      * @return EmbeddingResponse The response containing the generated embeddings.
+     * @throws OllamaClientException
      */
     public function generateEmbeddings(string|array $prompt, ?string $modelName = null, array $modelOptions = []): EmbeddingResponse
     {
-        if (! empty($this->modelName)) {
-            // Override model if provided on runtime
-            $this->modelName = $modelName;
-        } elseif (isset($modelOptions['model'])) {
-            // Use model name specified in modelOptions
-            $this->modelName = $modelOptions['model'];
-        }
+        $this->validate(['model', 'prompt'], array_merge(['model' => $modelName, 'prompt' => $prompt], $modelOptions));
 
         if (is_array($prompt)) {
             $prompt = implode("\n", $prompt);
@@ -124,9 +123,9 @@ class OllamaClient
      * @param  string  $modelName  The name of the model.
      * @return $this
      */
-    public function setModel(string $modelName): self
+    public function setModel(?string $modelName): self
     {
-        $this->modelName = $modelName;
+        $this->modelName = $modelName ?? $this->modelName;
 
         return $this;
     }
@@ -145,7 +144,7 @@ class OllamaClient
      */
     public function model(?string $modelName = null): ModelRepository
     {
-        if (! empty($modelName)) {
+        if (!empty($modelName)) {
             $this->modelName = $modelName;
         }
 

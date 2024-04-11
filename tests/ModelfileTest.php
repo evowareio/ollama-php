@@ -2,8 +2,8 @@
 
 namespace Evoware\OllamaPHP\Tests;
 
-use Evoware\OllamaPHP\Models\ModelFile;
 use PHPUnit\Framework\TestCase;
+use Evoware\OllamaPHP\Models\ModelFile;
 
 class ModelFileTest extends TestCase
 {
@@ -120,5 +120,33 @@ class ModelFileTest extends TestCase
         $this->assertEquals(['mirostat' => 1, 'numCtx' => 2], $modelFile->getParameters());
         $this->assertEquals(1, $modelFile->getParameter('mirostat'));
         $this->assertEquals(['detail1' => 'value1', 'detail2' => 'value2'], $modelFile->getDetails());
+    }
+
+
+    public function testModelfileToStringConversion()
+    {
+        $modelFile = new ModelFile([
+            'from' => 'ollama:7b',
+            'system' => 'This is a system message',
+            'adapter' => '__ADAPTER__',
+            'license' => '__LICENSE__',
+            'messages' => [
+                ['role' => 'user', 'message' => 'Hello'],
+                ['role' => 'assistant', 'message' => 'Welcome, user!'],
+            ]
+        ]);
+
+        $modelfileString = (string) $modelFile;
+
+        $expectedText = <<<EOD
+FROM ollama:7b
+SYSTEM This is a system message
+ADAPTER __ADAPTER__
+LICENSE __LICENSE__
+MESSAGE user Hello
+MESSAGE assistant Welcome, user!
+EOD;
+
+        $this->assertEquals($expectedText, $modelfileString);
     }
 }

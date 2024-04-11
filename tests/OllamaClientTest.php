@@ -69,6 +69,7 @@ class OllamaClientTest extends TestCase
         $ollamaClient = new OllamaClient($httpClient);
         $prompt = 'Hello, ';
         $response = $ollamaClient->generateCompletion($prompt, modelOptions: [
+            'model' => 'mistral',
             'max_tokens' => 50,
             'temperature' => 0.5,
         ]);

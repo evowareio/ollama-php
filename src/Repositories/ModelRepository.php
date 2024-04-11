@@ -2,14 +2,16 @@
 
 namespace Evoware\OllamaPHP\Repositories;
 
-use Evoware\OllamaPHP\DataObjects\Model;
-use Evoware\OllamaPHP\Models\ModelFile;
-use Evoware\OllamaPHP\Traits\MakesHttpRequests;
 use GuzzleHttp\ClientInterface;
+use Evoware\OllamaPHP\Traits\ValidatesFields;
+use Evoware\OllamaPHP\Traits\MakesHttpRequests;
+use Evoware\OllamaPHP\Models\ModelFile;
+use Evoware\OllamaPHP\DataObjects\Model;
 
 class ModelRepository
 {
     use MakesHttpRequests;
+    use ValidatesFields;
 
     protected ClientInterface $client;
 
@@ -25,8 +27,10 @@ class ModelRepository
 
     public function create($name, ?ModelFile $modelFile = null)
     {
+        $this->validate(['name'], ['name' => $name]);
         $response = $this->post('models', [
             'name' => $name,
+            'modelfile' => isset($modelfile) ? (string) $modelFile : null,
             'stream' => false, // TODO introduce parameter once streaming is supported
         ]);
 
@@ -53,6 +57,7 @@ class ModelRepository
      */
     public function info(string $modelName): Model
     {
+        $this->validate(['name'], ['name' => $modelName]);
         $response = $this->get('show', [
             'name' => $modelName,
             'stream' => false, // TODO introduce parameter once streaming is supported
