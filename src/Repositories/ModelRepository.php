@@ -13,11 +13,11 @@ class ModelRepository
     use MakesHttpRequests;
     use ValidatesFields;
 
-    protected ClientInterface $client;
+    protected ClientInterface $httpClient;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $httpClient)
     {
-        $this->client = $client;
+        $this->httpClient = $httpClient;
     }
 
     public function fromModelFile(string $modelName, ModelFile $modelfile)

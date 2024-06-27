@@ -1,0 +1,21 @@
+{
+    "name": "PHP Development Container",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "php.validate.executablePath": "/usr/local/bin/php"
+    },
+    "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "felixfbecker.php-debug",
+        "ikappas.phpcs",
+        "timonwong.shellcheck",
+        "ms-azuretools.vscode-docker"
+    ],
+    "postCreateCommand": "composer install",
+    "remoteUser": "root",
+    "workspaceFolder": "/workspace"
+}

@@ -16,20 +16,22 @@ use Evoware\OllamaPHP\Exceptions\OllamaClientException;
 
 trait MakesHttpRequests
 {
-    protected ClientInterface $client;
+    protected ClientInterface $httpClient;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $httpClient)
     {
-        $this->client = $client;
+        $this->httpClient = $httpClient;
     }
 
-    protected function request(string $method, string $endpoint, array $data = []): OllamaResponseInterface
+    protected function request(string $method, string $endpoint, array $options = []): OllamaResponseInterface
     {
         try {
-            $data['stream'] = false;
-            $response = $this->client->request($method, $endpoint, [
-                'json' => $data,
+            $response = $this->httpClient->request($method, $endpoint, [
+                'json' => $options,
             ]);
+            if (isset($options['stream']) && $options['stream'] === true) {
+                return $response;
+            }
         } catch (ClientException $e) {
             throw new OllamaClientException($e->getMessage(), $e->getCode(), $e);
         } catch (ServerException $e) {
@@ -50,18 +52,32 @@ trait MakesHttpRequests
         }
     }
 
-    public function get($endpoint, $data = []): OllamaResponseInterface
+    public function get($endpoint, $options = []): OllamaResponseInterface
     {
-        return $this->request('GET', $endpoint, $data);
+        return $this->request('GET', $endpoint, $options);
     }
 
-    public function post($endpoint, $data = []): OllamaResponseInterface
+    public function post($endpoint, $options = []): OllamaResponseInterface
     {
-        return $this->request('POST', $endpoint, $data);
+        return $this->request('POST', $endpoint, $options);
     }
 
     public function getClient(): ClientInterface
     {
-        return $this->client;
+        return $this->httpClient;
+    }
+
+    protected function stream($method, $uri, array $options = [], callable $callback)
+    {
+        $response = $this->httpClient->request($method, $uri, $options);
+        $body = $response->getBody();
+
+        while (!$body->eof()) {
+            $chunk = $body->read(1024);
+            if ($chunk) {
+                $data = json_decode($chunk, true);
+                $callback($data);
+            }
+        }
     }
 }

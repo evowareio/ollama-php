@@ -7,9 +7,13 @@ use Evoware\OllamaPHP\Responses\CompletionResponse;
 use Evoware\OllamaPHP\Responses\ChatCompletionResponse;
 use Evoware\OllamaPHP\Repositories\ModelRepository;
 use Evoware\OllamaPHP\OllamaClient;
+use GuzzleHttp\Psr7\Response;
+use Evoware\OllamaPHP\Traits\MocksHttpRequests;
 
 class OllamaClientTest extends TestCase
 {
+    use MocksHttpRequests;
+
     public function tesHttpClientInjection()
     {
         $httpClient = $this->mockHttpClient();
@@ -158,5 +162,23 @@ class OllamaClientTest extends TestCase
         $this->assertInstanceOf(EmbeddingResponse::class, $response);
         $this->assertIsArray($response->getEmbedding());
         $this->assertEquals(0.5670403838157654, $response->getEmbedding()[0]);
+    }
+
+    public function testStreamCompletion()
+    {
+        $chunks = [
+            '{"message":[{"text":"Hello, "}]}',
+            '{"message":[{"text":"world!"}]}',
+        ];
+
+        $httpClient = $this->mockStreamingClient($chunks);
+        $ollamaClient = new OllamaClient($httpClient);
+
+        $receivedData = [];
+        $ollamaClient->streamCompletion('Hello, ', [], function ($data) use (&$receivedData) {
+            $receivedData[] = $data['message'][0]['text'];
+        });
+
+        $this->assertEquals(['Hello, ', 'world!'], $receivedData);
     }
 }

@@ -29,7 +29,7 @@ class OllamaClient
 
     public function __construct(?ClientInterface $httpClient = null, array $clientOptions = [])
     {
-        $this->client = $httpClient ?? new Client($clientOptions);
+        $this->httpClient = $httpClient ?? new Client($clientOptions);
     }
 
     /**
@@ -39,7 +39,7 @@ class OllamaClient
     public function getModelRepository(): ModelRepository
     {
         if (!isset($this->modelRepository)) {
-            $this->modelRepository = new ModelRepository($this->client);
+            $this->modelRepository = new ModelRepository($this->httpClient);
         }
 
         return $this->modelRepository;
@@ -87,6 +87,14 @@ class OllamaClient
         return $this->post('chat', $jsonData);
     }
 
+    public function streamCompletion($prompt, $options = [], callable $callback)
+    {
+        $this->stream('POST', '/v1/completions', [
+            'json' => array_merge(['prompt' => $prompt], $options),
+            'stream' => true,
+        ], $callback);
+    }
+
     /**
      * Generate embeddings for a given prompt using the specified model or clientOptions.
      *
@@ -108,9 +116,9 @@ class OllamaClient
     }
 
     /**
-     * Returns the HTTP client used by the OllamaClient.
+     * Returns the HTTP httpClient used by the OllamaClient.
      *
-     * @return ClientInterface The HTTP client.
+     * @return ClientInterface The HTTP httpClient.
      */
     public function getHttpClient(): ClientInterface
     {

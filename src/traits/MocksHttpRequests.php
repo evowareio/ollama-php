@@ -37,4 +37,24 @@ trait MocksHttpRequests
 
         return new Client(['handler' => $handlerStack]);
     }
+
+    /**
+     * Create a Guzzle Client with a Mock Handler for streaming responses.
+     *
+     * @param  array  $chunks  An array of response chunks to simulate streaming.
+     * Each chunk should be a string representing a piece of the streaming response.
+     * @return Client A Guzzle Client with a Mock Handler.
+     */
+    protected function mockStreamingClient(array $chunks): Client
+    {
+        $responses = [];
+        foreach ($chunks as $chunk) {
+            $responses[] = new Response(200, ['Content-Type' => 'application/json'], $chunk);
+        }
+
+        $mock = new MockHandler($responses);
+        $handlerStack = HandlerStack::create($mock);
+
+        return new Client(['handler' => $handlerStack]);
+    }
 }
